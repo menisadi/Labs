@@ -1,0 +1,9 @@
+
+Invoking autoreconf in build directory: /users/studs/bsc/2015/sadigurs/workspace/practice4
+
+sh -c "autoreconf -i" 
+autoreconf: 'configure.ac' or 'configure.in' is required
+
+Configuration failed with error
+Build stopped
+()

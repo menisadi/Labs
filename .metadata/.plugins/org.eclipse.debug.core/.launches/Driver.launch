@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/assignment3I/src/utils/Driver.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="utils.Driver"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="&quot;/users/studs/bsc/2015/sadigurs/workspace/assignment3/Assets.xml&quot;&#10;&quot;/users/studs/bsc/2015/sadigurs/workspace/assignment3/AssetContentsRepairDetails.xml&quot;&#10;&quot;/users/studs/bsc/2015/sadigurs/workspace/assignment3/InitialData.xml&quot;&#10;&quot;/users/studs/bsc/2015/sadigurs/workspace/assignment3/CustomersGroups.xml&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="assignment3I"/>
+</launchConfiguration>

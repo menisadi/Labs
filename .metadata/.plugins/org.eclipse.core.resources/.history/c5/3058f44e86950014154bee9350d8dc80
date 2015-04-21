@@ -1,0 +1,77 @@
+package utils;
+
+import java.util.logging.Logger;
+
+import parsing.AssetContentsRepairDetail;
+import parsing.AssetContentsRepairDetails;
+import parsing.ConfigParser;
+import parsing.CustomersGroups;
+import parsing.REIT;
+import passive.Management;
+import structures.Assets;
+
+/**
+ * The Class Driver.
+ */
+public class Driver {
+	private static final Logger log = Logger.getLogger(Driver.class.getName());
+
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments (path to XML files)
+	 */
+	public static void main(String[] args) {
+		log.info("Main start");
+		
+		try {
+			Management management = prepareSimulationObjects(args[0], args[1], args[2], args[3]); 
+			
+			management.startSimulation();
+			
+		} catch (Exception e) {
+			log.severe(e.getMessage() + "\n" + e.getStackTrace().toString());
+		}
+		
+		log.info("Main end");
+	}
+	
+	/**
+	 * Prepare simulation objects.
+	 *
+	 * @param initialDataXML the initial data xml
+	 * @param assetContentDetailsXML the asset content details xml
+	 * @param assetsXML the assets xml
+	 * @param customerGroupsXML the customer groups xml
+	 * @return a management object ready for simulation
+	 * @throws Exception the exception
+	 */
+	public static Management prepareSimulationObjects(String initialDataXML, String assetContentDetailsXML,
+			String assetsXML, String customerGroupsXML) throws Exception {
+		log.info("Parsing and Preparing simulation objects");
+		
+		// Parse files
+		REIT reit = ConfigParser.parse(REIT.class, initialDataXML);
+		AssetContentsRepairDetails acrd = ConfigParser.parse(AssetContentsRepairDetails.class, assetContentDetailsXML);
+		Assets assets = ConfigParser.parse(Assets.class, assetsXML);
+		CustomersGroups cg = ConfigParser.parse(CustomersGroups.class, customerGroupsXML);
+		
+		// Create Management /Add objects
+		Management management = new Management(reit.getWarehouse(), reit.getStaff().getTotalNumberOfRentalRequests(), 
+				reit.getStaff().getNumberOfMaintenancePersons());
+		
+		management.initiateClerks(reit.getStaff().getClerks());
+		
+		management.initiateAssets(assets);
+		
+		management.initiateCustomerGroups(cg.getCustomerGroups());
+		
+		for (AssetContentsRepairDetail itemDetails : acrd.getAssetContentsRepairDetails()) {
+			management.addItemRepairMaterialsInformation(itemDetails.getItemName(), itemDetails.getMaterialsInfo());
+			management.addItemRepairToolsInformation(itemDetails.getItemName(), itemDetails.getToolsInfo());
+		}
+		
+		return management;
+	}
+
+}
