@@ -1,0 +1,4 @@
+1. what does getdents return. use man 2 getdents
+2. how is the data stored in buf[]
+3. what is the relation between buf and linux_direct
+4. how do you move from element to the next one in buf
