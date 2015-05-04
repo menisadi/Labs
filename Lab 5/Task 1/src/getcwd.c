@@ -5,6 +5,7 @@
 
 int main( void )
 {
+	int PATH_MAX = 100;
     char* cwd;
     char buff[PATH_MAX + 1];
 
