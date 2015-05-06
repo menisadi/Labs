@@ -2,14 +2,14 @@
 #{-tab-}actions
 
 # All Targets
-all: task
+all: myshell
 
 # Tool invocations
-task: bin/task1a.o 
-	gcc -m32 -g -Wall -o task bin/task1a.o bin/LineParser.o
+myshell: bin/myshell.o bin/LineParser.o
+	gcc -m32 -g -Wall -o myshell bin/myshell.o bin/LineParser.o
 # Depends on the source and header files
-bin/task1a.o: src/task1a.c
-	gcc -g -Wall -m32 -ansi -c -o bin/task1a.o src/task1a.c 
+bin/myshell.o: src/myshell.c
+	gcc -g -Wall -m32 -ansi -c -o bin/myshell.o src/myshell.c 
 
 bin/LineParser.o: src/LineParser.c
 	gcc -g -Wall -m32 -ansi -c -o bin/LineParser.o src/LineParser.c 
@@ -19,4 +19,4 @@ bin/LineParser.o: src/LineParser.c
 
 #Clean the build directory
 clean: 
-	rm -f bin/*.o task
+	rm -f bin/*.o myshell

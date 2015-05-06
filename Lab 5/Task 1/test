@@ -1,0 +1,14 @@
+ls -l
+echo hello world
+cd .
+!0
+!1
+history
+ls
+wrong_command
+cd ~/
+ls -a
+pwd
+echo echo echo echo
+!0
+history
