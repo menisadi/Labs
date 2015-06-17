@@ -104,7 +104,7 @@ void save_into_file(char *filename, int size, void *mem_buffer) {
   printf("save_into_file\n");
   char line[100] = {0};
   unsigned int file_size, s_address, t_location;
-  mem_buffer = "++++++++++abcdefghijklm";
+  mem_buffer = ";";
   int length;
   char* mem_address;
   FILE* fp = fopen(filename,"r+");
