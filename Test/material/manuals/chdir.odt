@@ -1,0 +1,251 @@
+User Commands                                               cd(1)
+
+NAME
+
+
+     cd, chdir, pushd, popd, dirs - change working directory
+
+SYNOPSIS
+
+
+     /usr/bin/cd [directory]
+
+  sh
+     cd [argument]
+
+     chdir [argument]
+
+  csh
+     cd [dir]
+
+     chdir [dir]
+
+     pushd [+n | dir]
+
+     popd [+ n]
+
+     dirs [-l]
+
+  ksh
+     cd [-L] [-P] [arg]
+
+     cd old new
+
+DESCRIPTION
+
+
+  /usr/bin/cd
+     The /usr/bin/cd utility changes the current directory in the
+     context  of  the cd utility only. This is in contrast to the
+     version built into the shell. /usr/bin/cd has no  effect  on
+     the invoking process but can be used to determine whether or
+     not a given directory can be set as the current directory.
+
+  sh
+     The Bourne shell built-in cd changes the  current  directory
+     to  argument.  The shell parameter HOME is the default argu-
+     ment. The shell parameter CDPATH defines the search path for
+     the  directory  containing  argument.  Alternative directory
+     names are separated by a colon  (:).  The  default  path  is
+     <null>  (specifying  the  current  directory).  The  current
+     directory is specified by a null path name, which can appear
+     immediately after the equal sign or between the colon delim-
+     iters anywhere else in the path  list.  If  argument  begins
+     with `/', `.', or `.. ', the search path is not used. Other-
+     wise, each directory in the path is searched  for  argument.
+     cd  must  have  execute  (search)  permission  in  argument.
+     Because a new process is created to execute each command, cd
+     would be ineffective if it were written as a normal command;
+     therefore, it is recognized by and is internal to the shell.
+     (See pwd(1), sh(1), and chdir(2)).
+
+SunOS 5.10          Last change: 13 Jul 2004                    1
+
+User Commands                                               cd(1)
+
+     chdir is just another way to call cd.
+
+  csh
+     If dir is not specified, the C shell built-in  cd  uses  the
+     value  of shell parameter HOME as the new working directory.
+     If dir specifies a complete path starting with ` / ', ` . ',
+     or ` .. ', dir becomes the new working directory. If neither
+     case applies, cd tries  to  find  the  designated  directory
+     relative  to  one of the paths specified by the CDPATH shell
+     variable. CDPATH has the same syntax as, and similar  seman-
+     tics  to,  the  PATH  shell  variable.  cd must have execute
+     (search) permission in dir. Because a new process is created
+     to  execute each command, cd would be ineffective if it were
+     written as a normal command; therefore, it is recognized  by
+     and  is  internal  to  the  C-shell. (See pwd(1), sh(1), and
+     chdir(2)).
+
+     chdir changes the shell's  working  directory  to  directory
+     dir.  If  no argument is given, change to the home directory
+     of the user. If dir is a relative pathname not found in  the
+     current  directory, check for it in those directories listed
+     in the cdpath variable. If dir is the name of a shell  vari-
+     able  whose  value  starts with a /, change to the directory
+     named by that value.
+
+     pushd pushes a directory onto the directory stack.  With  no
+     arguments, exchange the top two elements.
+
+     +n       Rotate the n'th entry to the top of the  stack  and
+              cd to it.
+
+     dir      Push the current working directory onto  the  stack
+              and change to dir.
+
+     popd pops the directory stack and cd to the new  top  direc-
+     tory.  The elements of the directory stack are numbered from
+     0 starting at the top.
+
+     +n       Discard the n'th entry in the stack.
+
+     dirs prints the directory stack, most recent  to  the  left;
+     the first directory shown is the current directory. With the
+     -l argument, produce an unabbreviated printout; use of the ~
+     notation is suppressed.
+
+SunOS 5.10          Last change: 13 Jul 2004                    2
+
+User Commands                                               cd(1)
+
+  ksh
+     The Korn shell built-in cd command can be in either  of  two
+     forms. In the first form it changes the current directory to
+     arg. If arg is - the directory is changed  to  the  previous
+     directory.  The  shell variable HOME is the default arg. The
+     environment variable PWD is set to the current directory. If
+     the  PWD  is  changed, the OLDPWD environment variable shall
+     also be changed to the value of the old  working  directory,
+     that  is, the current working directory immediately prior to
+     the call to change directory (cd). The shell variable CDPATH
+     defines  the  search  path for the directory containing arg.
+     Alternative directory names are separated by  a  colon  (:).
+     The default path is null (specifying the current directory).
+     The current directory is specified  by  a  null  path  name,
+     which can appear immediately after the equal sign or between
+     the colon delimiters anywhere else in the path list. If  arg
+     begins  with a ` / ', ` . ', or ` .. ', then the search path
+     is not used.  Otherwise,  each  directory  in  the  path  is
+     searched  for  arg.  If  unsuccessful, cd attempts to change
+     directories to the pathname formed by the  concatenation  of
+     the value of PWD, a slash character, and arg.
+
+     -L       Handles the operation dot-dot (..) logically.  Sym-
+              bolic  link components are not resolved before dot-
+              dot components are processed.
+
+     -P       Handles the operand  dot-dot  physically.  Symbolic
+              link  components  are  resolved before dot-dot com-
+              ponents are processed.
+
+     If both -L and -P options are specified, the last option  to
+     be  invoked  is used and the other is ignored. If neither -L
+     nor -P is specified, the operand is  handled  dot-dot  logi-
+     cally.
+
+     The second form of cd substitutes the  string  new  for  the
+     string  old  in the current directory name, PWD and tries to
+     change to this new directory.
+
+     The cd command cannot be executed by  rksh.  Because  a  new
+     process  is  created  to  execute  each command, cd would be
+     ineffective if it were written as a normal  command;  there-
+     fore, it is recognized by and is internal to the Korn shell.
+     (See pwd(1), sh(1), and chdir(2)).
+
+OPERANDS
+
+
+     The following operands are supported:
+
+SunOS 5.10          Last change: 13 Jul 2004                    3
+
+User Commands                                               cd(1)
+
+     directory       An absolute  or  relative  pathname  of  the
+                     directory   that  becomes  the  new  working
+                     directory. The interpretation of a  relative
+                     pathname   by   cd  depends  on  the  CDPATH
+                     environment variable.
+
+OUTPUT
+
+
+     If a non-empty directory name from CDPATH is used, an  abso-
+     lute pathname of the new working directory is written to the
+     standard output as follows:
+
+          "%s\n", <new directory>
+
+     Otherwise, there is no output.
+
+ENVIRONMENT VARIABLES
+
+
+     See environ(5) for descriptions of the following environment
+     variables  that  affect  the  execution of cd: LANG, LC_ALL,
+     LC_CTYPE, LC_MESSAGES, and NLSPATH.
+
+     CDPATH          A colon-separated  list  of  pathnames  that
+                     refer   to  directories.  If  the  directory
+                     operand does not begin with a slash  (  /  )
+                     character,  and  the  first component is not
+                     dot or dot-dot, cd  searches  for  directory
+                     relative  to  each  directory  named  in the
+                     CDPATH variable, in the  order  listed.  The
+                     new  working  directory  sets  to  the first
+                     matching directory found. An empty string in
+                     place of a directory pathname represents the
+                     current directory. If CDPATH is not set,  it
+                     is treated as if it were an empty string.
+
+     HOME            The name of the home directory, used when no
+                     directory operand is specified.
+
+     OLDPWD          A pathname of the  previous  working  direc-
+                     tory, used by cd-.
+
+     PWD             A pathname of the current working directory,
+                     set  by  cd  after  it  has  changed to that
+                     directory.
+
+SunOS 5.10          Last change: 13 Jul 2004                    4
+
+User Commands                                               cd(1)
+
+EXIT STATUS
+
+
+     The following exit values are returned by cd:
+
+     0        The directory was successfully changed.
+
+     >0       An error occurred.
+
+ATTRIBUTES
+
+
+     See attributes(5) for descriptions of the  following  attri-
+     butes:
+
+     ____________________________________________________________
+    |       ATTRIBUTE TYPE        |       ATTRIBUTE VALUE       |
+    |_____________________________|_____________________________|
+    | Availability                | SUNWcsu                     |
+    |_____________________________|_____________________________|
+    | Interface Stability         | Standard                    |
+    |_____________________________|_____________________________|
+
+SEE ALSO
+
+
+     csh(1),  ksh(1),  pwd(1),  sh(1),  chdir(2),  attributes(5),
+     environ(5), standards(5)
+
+SunOS 5.10          Last change: 13 Jul 2004                    5
+
+No manual entry for 3.

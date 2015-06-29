@@ -1,0 +1,271 @@
+System Calls                                              fork(2)
+
+NAME
+
+
+     fork, fork1, forkall - create a new process
+
+SYNOPSIS
+
+
+     #include <sys/types.h>
+     #include <unistd.h>
+
+     pid_t fork(void);
+
+     pid_t fork1(void);
+
+     pid_t forkall(void);
+
+DESCRIPTION
+
+
+     The fork(), fork1(), and forkall() functions  create  a  new
+     process.  The  address  space of the new process (child pro-
+     cess) is an exact copy of the address space of  the  calling
+     process  (parent  process).  The  child process inherits the
+     following attributes from the parent process:
+
+       o  real user ID, real group ID, effective user ID,  effec-
+          tive group ID
+
+       o  environment
+
+       o  open file descriptors
+
+       o  close-on-exec flags (see exec(2))
+
+       o  signal handling settings (that  is,  SIG_DFL,  SIG_IGN,
+          SIG_HOLD, function address)
+
+       o  supplementary group IDs
+
+       o  set-user-ID mode bit
+
+       o  set-group-ID mode bit
+
+       o  profiling on/off status
+
+       o  nice value (see  nice(2))
+
+       o  scheduler class (see priocntl(2))
+
+       o  all attached shared memory segments (see shmop(2))
+
+       o  process group ID -- memory mappings (see mmap(2))
+
+       o  session ID (see exit(2))
+
+       o  current working directory
+
+SunOS 5.10          Last change: 19 Jul 2004                    1
+
+System Calls                                              fork(2)
+
+       o  root directory
+
+       o  file mode creation mask (see umask(2))
+
+       o  resource limits (see  getrlimit(2))
+
+       o  controlling terminal
+
+       o  saved user ID and group ID
+
+       o  task ID and project ID
+
+       o  processor bindings (see processor_bind(2))
+
+       o  processor set bindings (see pset_bind(2))
+
+       o  process privilege sets (see getppriv(2))
+
+       o  process flags (see getpflags(2))
+
+       o  active contract templates (see contract(4))
+
+     Scheduling priority and any per-process  scheduling  parame-
+     ters  that are specific to a given scheduling class might or
+     might not be inherited according to the policy of that  par-
+     ticular  class (see priocntl(2)). The child process might or
+     might not be in the same process contract as the parent (see
+     process(4)).  The child process differs from the parent pro-
+     cess in the following ways:
+
+       o  The child process has a unique process  ID  which  does
+          not match any active process group ID.
+
+       o  The child process has a  different  parent  process  ID
+          (that is, the process ID of the parent process).
+
+       o  The child process has its own copy of the parent's file
+          descriptors  and directory streams. Each of the child's
+          file descriptors shares a common file pointer with  the
+          corresponding file descriptor of the parent.
+
+       o  Each shared memory segment  remains  attached  and  the
+          value of shm_nattach is incremented by 1.
+
+       o  All semadj values are cleared (see semop(2)).
+
+       o  Process locks, text locks, data locks, and other memory
+          locks are not inherited by the child (see plock(3C) and
+          memcntl(2)).
+
+       o
+
+SunOS 5.10          Last change: 19 Jul 2004                    2
+
+System Calls                                              fork(2)
+
+          The  child  process's   tms   structure   is   cleared:
+          tms_utime,  stime, cutime, and cstime are set to 0 (see
+          times(2)).
+
+       o  The child processes resource utilizations are set to 0;
+          see  getrlimit(2).  The it_value and it_interval values
+          for the ITIMER_REAL timer are reset to 0;  see  getitimer(2)
+          .
+
+       o  The set of signals pending for  the  child  process  is
+          initialized to the empty set.
+
+       o  Timers created by timer_create(3RT) are  not  inherited
+          by the child process.
+
+       o  No asynchronous input or asynchronous output operations
+          are inherited by the child.
+
+       o  Any preferred hardware address tranlsation  sizes  (see
+          memcntl(2)) are inherited by the child.
+
+       o  The child process holds no contracts (see contract(4)).
+
+     Record locks set by the parent process are not inherited  by
+     the child process (see fcntl(2)).
+
+     Although any open door descriptors in the parent are  shared
+     by the child, only the parent will receive a door invocation
+     from clients even if the door  descriptor  is  open  in  the
+     child.  If a descriptor is closed in the parent, attempts to
+     operate on the door descriptor will fail even if it is still
+     open in the child.
+
+  Threads
+     A call to forkall() replicates in the child process  all  of
+     the  threads  (see thr_create(3C) and pthread_create(3C)) in
+     the parent process. A call to fork1()  replicates  only  the
+     calling thread in the child process.
+
+     In Solaris 10, a call to fork() is identical to  a  call  to
+     fork1();  only the calling thread is replicated in the child
+     process. This is the POSIX-specified behavior for fork().
+
+     In previous releases of  Solaris,  the  behavior  of  fork()
+     depended  on  whether or not the application was linked with
+     the  POSIX  threads  library.  When  linked  with   -lthread
+     (Solaris  Threads)  but  not  linked  with  -lpthread (POSIX
+     Threads), fork() was the same  as  forkall().   When  linked
+     with  -lpthread,  whether  or not also linked with -lthread,
+     fork() was the same as fork1().
+
+SunOS 5.10          Last change: 19 Jul 2004                    3
+
+System Calls                                              fork(2)
+
+     In Solaris 10, neither -lthread nor  -lpthread  is  required
+     for  multithreaded applications. The standard C library pro-
+     vides all threading support for  both  sets  of  application
+     programming    interfaces.     Applications   that   require
+     replicate-all fork semantics must call forkall().
+
+  fork() Safety
+     If a multithreaded application calls fork() or fork1(),  and
+     the  child  does  more  than  simply call one of the exec(2)
+     functions, there is a possibility of deadlock  occurring  in
+     the  child. The application should use pthread_atfork(3C) to
+     ensure safety with respect to this deadlock. Should there be
+     any outstanding mutexes throughout the process, the applica-
+     tion should call pthread_atfork() to wait  for  and  acquire
+     those  mutexes prior to calling fork() or fork1(). See  "MT-
+     Level of Libraries" on the attributes(5) manual page.
+
+RETURN VALUES
+
+
+     Upon successful completion, fork(), fork1(),  and  forkall()
+     return  0  to the child process and return the process ID of
+     the  child  process  to  the  parent   process.   Otherwise,
+     (pid_t)-1  is  returned to the parent process, no child pro-
+     cess is created, and errno is set to indicate the error.
+
+ERRORS
+
+
+     The fork(), fork1(), and forkall()function will fail if:
+
+     EAGAIN          A resource control or  limit  on  the  total
+                     number  of  processes,  tasks  or LWPs under
+                     execution by a single user,  task,  project,
+                     or  zone  has  been  exceeded,  or the total
+                     amount of system memory  available  is  tem-
+                     porarily insufficient to duplicate this pro-
+                     cess.
+
+     ENOMEM          There is not enough swap space.
+
+     EPERM           The  {PRIV_PROC_FORK}   privilege   is   not
+                     asserted in the effective set of the calling
+                     process.
+
+ATTRIBUTES
+
+
+     See attributes(5) for descriptions of the  following  attri-
+     butes:
+
+SunOS 5.10          Last change: 19 Jul 2004                    4
+
+System Calls                                              fork(2)
+
+     ____________________________________________________________
+   |        ATTRIBUTE TYPE       |        ATTRIBUTE VALUE      |
+   | ____________________________|_____________________________|_
+   |  Interface Stability        |  fork() is Standard. fork1()|
+   |                             |  and forkall() are Stable.  |
+   |_____________________________|_____________________________|
+   | MT-Level                    | Async-Signal-Safe.          |
+   |_____________________________|_____________________________|
+
+SEE ALSO
+
+
+     alarm(2),   exec(2),   exit(2),   fcntl(2),    getitimer(2),
+     getrlimit(2),   memcntl(2),  mmap(2),  nice(2), priocntl(2),
+     semop(2), shmop(2), times(2), umask(2),  door_create(3DOOR),
+     exit(3C), plock(3C), pthread_atfork(3C), pthread_create(3C),
+     signal(3C),  system(3C),  thr_create(3C)  timer_create(3RT),
+     wait(3C),        contract(4),       process(4)attributes(5),
+     privileges(5), standards(5)
+
+NOTES
+
+
+     An applications should call _exit() rather than exit(3C)  if
+     it  cannot execve(), since exit() will flush and close stan-
+     dard I/O channels and thereby corrupt the  parent  process's
+     standard I/O data structures. Using exit(3C) will flush buf-
+     fered data twice. See exit(2).
+
+     The thread in the child that calls fork()  or  fork1()  must
+     not  depend  on any resources held by threads that no longer
+     exist in the child.  In  particular,  locks  held  by  these
+     threads will not be released.
+
+     In a multithreaded process,  forkall()  in  one  thread  can
+     cause  blocking  system  calls  to be interrupted and return
+     with an EINTR error.
+
+SunOS 5.10          Last change: 19 Jul 2004                    5
+
+No manual entry for 3.
